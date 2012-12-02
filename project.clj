@@ -1,4 +1,4 @@
-(defproject clj-memorystone "1.0.0-SNAPSHOT"
+(defproject memorystone "1.0.0-SNAPSHOT"
   :description "FIXME: write description"
   :dependencies [
                      [clj-minecraft "1.0.0-SNAPSHOT"]
