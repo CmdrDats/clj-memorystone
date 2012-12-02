@@ -1,7 +1,8 @@
 (ns memorystone.core
   (:use cljminecraft.core)
   (:require [memorystone.structures :as struc])
-  (:import [org.bukkit.event Event Event$Type]))
+  ;(:import [org.bukkit.event Event Event$Type])
+  )
 
 (defn block-break [evt]
   (.sendMessage (.getPlayer evt) "You know. Breaking stuff should be illegal."))
