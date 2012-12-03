@@ -9,3 +9,4 @@ pom.xml
 /.classpath
 /.project
 /bin
+/built.jar
