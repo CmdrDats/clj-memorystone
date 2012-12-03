@@ -1,8 +1,8 @@
 name: memorystone
 main: cljminecraft.ClojurePlugin
 version: 2.0.0
-website: http://www.dats.co.za
+website: http://github.com/CmdrDats/clj-memorystone
 author: CmdrDats
-description: Memory Stone v2, Clojure port.
-depend: [clj-minecraft]
-class-loader-of: clj-minecraft
+description: Memory Stone v2, Clojure rewrite.
+depend: [cljminecraft]
+class-loader-of: cljminecraft
