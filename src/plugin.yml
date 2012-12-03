@@ -4,5 +4,5 @@ version: 2.0.0
 website: http://www.dats.co.za
 author: CmdrDats
 description: Memory Stone v2, Clojure port.
-depend: [clj-minecraft]
-class-loader-of: clj-minecraft
+depend: [cljminecraft]
+class-loader-of: cljminecraft
