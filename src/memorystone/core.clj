@@ -66,7 +66,7 @@
 (defn disable-plugin
   [pluginInstance]
   (. pluginInstance info "disabled memorystone.")
-  (log/info "%s" "enabling memorystone")
+  (log/info "%s" "disabled memorystone")
   ;TODO: deregister events?
   )
 
