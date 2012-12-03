@@ -4,7 +4,7 @@ cd ..\clj-minecraft
 call on_changed.bat nopause
 cd %cwd%
 
-call lein_uberjar.bat nopause
+call lein_jar.bat nopause
 
 
 if NOT "%1" == "nopause" @pause

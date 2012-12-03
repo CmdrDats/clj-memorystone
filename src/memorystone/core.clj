@@ -54,3 +54,19 @@
 
 (defn start [plugin]
   (ev/register-eventlist plugin (events)))
+
+
+(defn enable-plugin
+  [pluginInstance]
+  (. pluginInstance info "enabling memorystone.")
+  (log/info "%s" "enabling memorystone")
+  (start pluginInstance)
+  )
+
+(defn disable-plugin
+  [pluginInstance]
+  (. pluginInstance info "disabled memorystone.")
+  (log/info "%s" "enabling memorystone")
+  ;TODO: deregister events?
+  )
+
