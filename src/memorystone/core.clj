@@ -1,36 +1,56 @@
 (ns memorystone.core
-  (:use cljminecraft.core)
-  (:require [memorystone.structures :as struc])
-  ;(:import [org.bukkit.event Event Event$Type])
-  )
+  (:require [cljminecraft.events :as ev])
+  (:require [cljminecraft.player :as pl])
+  (:require [cljminecraft.bukkit :as bk])
+  (:require [cljminecraft.logging :as log])
+  (:require [cljminecraft.files :as files]))
 
-(defn block-break [evt]
-  (.sendMessage (.getPlayer evt) "You know. Breaking stuff should be illegal."))
+(defonce memorystones (atom #{}))
 
-(defn sign-change [evt]
-  (.sendMessage (.getPlayer evt) "Now I've placed a sign and changed the text"))
+(defn sign-change [ev]
+  (let [[type name] (seq (.getLines ev))]
+    (cond
+     (not= "[MemoryStone]" type) nil
+     (empty? name) (do (pl/send-msg ev "Please enter a name on the second line"))
+     :else
+     (do
+       (swap! memorystones conj {:block (.getBlock ev) :name name})
+       (pl/send-msg ev "You placed a Memory Stone. Well done.")))))
 
+(defn memstone-for-block [block]
+  (first (filter #(.equals block (:block %)) @memorystones)))
 
-(defn player-move [evt]
-  (.sendMessage (.getPlayer evt) "Ok, no, really.. stop moving."))
+(defn sign-break [ev]
+  (when-let [memstone (memstone-for-block (.getBlock ev))]
+    (pl/send-msg ev "You broke a Memory Stone! oh dear.")
+    (swap! memorystones disj memstone)))
 
-(defn get-blocklistener []
-  (cljminecraft.core/auto-proxy
-   [org.bukkit.event.block.BlockListener] []
-   (onBlockBreak [evt] (if (.isCancelled evt) nil (block-break evt)))
-   (onSignChange [evt] (if (.isCancelled evt) nil (sign-change evt)))))
+(defn memstone-to-file [{:keys [block name] :as memstone}]
+  (let [{:keys [x y z] :as location} (bean (.getLocation block))]
+    {:world-uuid (str (.. block getWorld getUID))
+     :location [x y z]
+     :name name}))
 
-(defn enable-plugin [plugin]
-    (def plugin* plugin)
-    (def server* (.getServer plugin*))
-    (def plugin-manager* (.getPluginManager server* ))
-    (def plugin-desc* (.getDescription plugin*))
+(defn memstone-from-file [{:keys [world-uuid location name] :as memstone}]
+  (let [world (bk/world-by-uuid world-uuid)
+        [x y z] location
+        block (.getBlockAt world x y z)]
+    {:block block
+     :name name}))
 
-;    (let [blocklistener (get-blocklistener)]
-;      (.registerEvent plugin-manager* (:BLOCK_BREAK event-types) blocklistener (:NORMAL event-priorities) plugin*)
-;      (.registerEvent plugin-manager* (:SIGN_CHANGE event-types) blocklistener (:NORMAL event-priorities) plugin*)
-;      )
-  (log-info "Memory stone started"))
+(defn write-memstones [ev]
+  (files/write-json-file
+   "stones.json"
+   {:stones (map memstone-to-file @memorystones)}))
 
-(defn disable-plugin [plugin]
-  (log-info "Memory stone stopped"))
+(defn read-memstones []
+  (let [{:keys [stones]} (files/read-json-file "stones.json")]
+    (reset! memorystones (set (map memstone-from-file stones)))))
+
+(defn events
+  []
+  [(ev/event block.sign-change #'sign-change)
+   (ev/event block.block-break #'sign-break)])
+
+(defn start [plugin]
+  (ev/register-eventlist plugin (events)))
