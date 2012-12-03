@@ -26,10 +26,10 @@
     (def plugin-manager* (.getPluginManager server* ))
     (def plugin-desc* (.getDescription plugin*))
 
-    (let [blocklistener (get-blocklistener)]
-      (.registerEvent plugin-manager* (:BLOCK_BREAK event-types) blocklistener (:NORMAL event-priorities) plugin*)
-      (.registerEvent plugin-manager* (:SIGN_CHANGE event-types) blocklistener (:NORMAL event-priorities) plugin*)
-      )
+;    (let [blocklistener (get-blocklistener)]
+;      (.registerEvent plugin-manager* (:BLOCK_BREAK event-types) blocklistener (:NORMAL event-priorities) plugin*)
+;      (.registerEvent plugin-manager* (:SIGN_CHANGE event-types) blocklistener (:NORMAL event-priorities) plugin*)
+;      )
   (log-info "Memory stone started"))
 
 (defn disable-plugin [plugin]
