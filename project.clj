@@ -4,7 +4,7 @@
                      [clj-minecraft "1.0.1-SNAPSHOT"]
                      ;make sure any required projects here either are already in clj-minecraft uberjar or
                      ;just make this an uberjar; or find a way to add them to ../lib in bukkit
-                     [org.clojure/clojure "1.4.0"]
+                     [org.clojure/clojure "1.5.0-beta1"]
                      [org.clojure/tools.logging "0.2.3"]
                      [org.bukkit/bukkit "1.4.5-R0.3-SNAPSHOT"]
                      ]
