@@ -10,6 +10,6 @@ rem built.jar is a folder link to your running server's plugin folder
 rem you make it by running this cmd: mklink /d built.jar c:\craftbukkit\plugins\
 if EXIST "built.jar" ( move target\memorystone-*SNAPSHOT.jar built.jar )
 
-lein install
+call lein install
 
 if NOT "%1" == "nopause" @pause
