@@ -52,18 +52,18 @@
   [(ev/event block.sign-change #'sign-change)
    (ev/event block.block-break #'sign-break)])
 
-(defn start [plugin]
+(defn start2 [plugin]
   (ev/register-eventlist plugin (events)))
 
 
-(defn enable-plugin
+(defn start
   [pluginInstance]
   (. pluginInstance info "enabling memorystone.")
   (log/info "%s" "enabling memorystone")
-  (start pluginInstance)
+  (start2 pluginInstance)
   )
 
-(defn disable-plugin
+(defn stop
   [pluginInstance]
   (. pluginInstance info "disabled memorystone.")
   (log/info "%s" "disabled memorystone")
