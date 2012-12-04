@@ -70,3 +70,7 @@
   ;TODO: deregister events?
   )
 
+
+(defn test [pluginInstance a b c]
+  (. pluginInstance info (str a b c))
+  )
