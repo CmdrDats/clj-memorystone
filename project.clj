@@ -9,8 +9,6 @@
                      [org.bukkit/bukkit "1.4.5-R0.3-SNAPSHOT"]
                      ]
   
-  :warn-on-reflection true
-  
   :repl-options [:init nil :caught clj-stacktrace.repl/pst+]
   
   :repositories [
