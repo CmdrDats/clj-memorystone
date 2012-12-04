@@ -58,15 +58,15 @@
 
 (defn start
   [pluginInstance]
-  (. pluginInstance info "enabling memorystone.")
-  (log/info "%s" "enabling memorystone")
+  (. pluginInstance info "in start memorystone.")
+  (log/info "%s" "in start memorystone")
   (start2 pluginInstance)
   )
 
 (defn stop
   [pluginInstance]
-  (. pluginInstance info "disabled memorystone.")
-  (log/info "%s" "disabled memorystone")
+  (. pluginInstance info "in stop memorystone.")
+  (log/info "%s" "in stop memorystone")
   ;TODO: deregister events?
   )
 
