@@ -10,3 +10,4 @@ pom.xml
 /.project
 /bin
 /built.jar
+/deploy
