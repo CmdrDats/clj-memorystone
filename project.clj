@@ -1,7 +1,7 @@
 (defproject memorystone "2.0.0-SNAPSHOT"
   :description "FIXME: write description"
   :dependencies [
-                     [clj-minecraft "1.0.1-SNAPSHOT"]
+                     [cljminecraft "1.0.1-SNAPSHOT"]
                      ;make sure any required projects here either are already in clj-minecraft uberjar or
                      ;just make this an uberjar; or find a way to add them to ../lib in bukkit
                      [org.clojure/clojure "1.4.0"]
