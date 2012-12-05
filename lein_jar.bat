@@ -9,7 +9,10 @@ call lein jar
 set deployDIR=deploy
 rem %deployDIR% is a folder link to your running server's plugin folder
 rem you make it by running this cmd: mklink /d deploy c:\craftbukkit\plugins\
-if EXIST "%deployDIR%" ( move target\memorystone-*SNAPSHOT.jar %deployDIR%\memorystone.jar )
+if EXIST "%deployDIR%" ( 
+   move target\memorystone-*SNAPSHOT.jar %deployDIR%\memorystone.jar 
+   if ERRORLEVEL 1 echo FAILED, make sure bukkit isn't running (so the plugin .jar isn't in locked)
+	)
 
 rem this only when other plugins depend on this plugin, put it in local ~/.m2 repository
 rem call lein install
