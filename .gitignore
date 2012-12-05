@@ -4,3 +4,9 @@ pom.xml
 /classes/
 .lein-failures
 .lein-deps-sum
+/target
+/local-m2
+/.classpath
+/.project
+/bin
+/built.jar

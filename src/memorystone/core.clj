@@ -52,5 +52,22 @@
   [(ev/event block.sign-change #'sign-change)
    (ev/event block.block-break #'sign-break)])
 
-(defn start [plugin]
+(defn start2 [plugin]
   (ev/register-eventlist plugin (events)))
+
+
+(defn start
+  [pluginInstance]
+  (. pluginInstance info "in start memorystone.")
+  (log/info "%s" "in start memorystone")
+  (start2 pluginInstance)
+  )
+
+(defn stop
+  [pluginInstance]
+  (. pluginInstance info "in stop memorystone.")
+  (log/info "%s" "in stop memorystone")
+  ;TODO: deregister events?
+  )
+
+

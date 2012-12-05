@@ -5,4 +5,4 @@ website: http://github.com/CmdrDats/clj-memorystone
 author: CmdrDats
 description: Memory Stone v2, Clojure rewrite.
 depend: [cljminecraft]
-class-loader-of: cljminecraft
+#unneeded: class-loader-of: cljminecraft
