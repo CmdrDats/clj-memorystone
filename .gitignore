@@ -12,3 +12,4 @@ pom.xml
 /built.jar
 /deploy
 /.settings/ccw.repl.cmdhistory.prefs
+*~
