@@ -11,3 +11,4 @@ pom.xml
 /bin
 /built.jar
 /deploy
+/.settings/ccw.repl.cmdhistory.prefs
