@@ -6,3 +6,8 @@ author: CmdrDats
 description: Memory Stone v2, Clojure rewrite.
 depend: [cljminecraft]
 #unneeded: class-loader-of: cljminecraft
+commands:
+  go:
+    description: Teleport to any named memorystone in this world.
+    permission: memorystone.go
+    usage: /<command> name

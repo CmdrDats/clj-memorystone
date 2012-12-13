@@ -2,29 +2,14 @@
   (:require [cljminecraft.events :as ev])
   (:require [cljminecraft.player :as pl])
   (:require [cljminecraft.bukkit :as bk])
-  (:require [cljminecraft.logging :as log])
+  (:require [cljminecraft.logging :as log]
+            [cljminecraft.commands :as cmd])
   (:require [cljminecraft.files :as files]))
 
+(defonce plugin (atom nil))
 (defonce memorystones (atom #{}))
 
-(defn sign-change [ev]
-  (let [[type name] (seq (.getLines ev))]
-    (cond
-     (not= "[MemoryStone]" type) nil
-     (empty? name) (do (pl/send-msg ev "Please enter a name on the second line"))
-     :else
-     (do
-       (swap! memorystones conj {:block (.getBlock ev) :name name})
-       (pl/send-msg ev "You placed a Memory Stone. Well done.")))))
-
-(defn memstone-for-block [block]
-  (first (filter #(.equals block (:block %)) @memorystones)))
-
-(defn sign-break [ev]
-  (when-let [memstone (memstone-for-block (.getBlock ev))]
-    (pl/send-msg ev "You broke a Memory Stone! oh dear.")
-    (swap! memorystones disj memstone)))
-
+;; Persistence handling
 (defn memstone-to-file [{:keys [block name] :as memstone}]
   (let [{:keys [x y z] :as location} (bean (.getLocation block))]
     {:world-uuid (str (.. block getWorld getUID))
@@ -38,36 +23,72 @@
     {:block block
      :name name}))
 
-(defn write-memstones [ev]
-  (files/write-json-file
+(defn write-memstones []
+  (files/write-json-file @plugin
    "stones.json"
    {:stones (map memstone-to-file @memorystones)}))
 
 (defn read-memstones []
-  (let [{:keys [stones]} (files/read-json-file "stones.json")]
+  (let [{:keys [stones]} (files/read-json-file @plugin "stones.json")]
     (reset! memorystones (set (map memstone-from-file stones)))))
+
+;; Event Handling
+(defn sign-change [ev]
+  (let [[type name] (seq (.getLines ev))]
+    (cond
+     (not= "[MemoryStone]" type) nil
+     (empty? name) (do (pl/send-msg ev "Please enter a name on the second line"))
+     :else
+     (do
+       (swap! memorystones conj {:block (.getBlock ev) :name name})
+       (write-memstones)
+       (pl/send-msg ev "You placed a Memory Stone. Well done.")))))
+
+(defn memstone-for-block [block]
+  (first (filter #(.equals block (:block %)) @memorystones)))
+
+(defn sign-break [ev]
+  (when-let [memstone (memstone-for-block (.getBlock ev))]
+    (pl/send-msg ev "You broke a Memory Stone! oh dear.")
+    (swap! memorystones disj memstone)
+    (write-memstones)))
 
 (defn events
   []
   [(ev/event block.sign-change #'sign-change)
    (ev/event block.block-break #'sign-break)])
 
-(defn start2 [plugin]
-  (ev/register-eventlist plugin (events)))
+;; Command Handling
+(defmethod cmd/convert-type :memorystone [sender type arg]
+  (first (filter #(= (.toLowerCase (:name %)) (.toLowerCase arg)) @memorystones)))
+
+(defmethod cmd/param-type-tabcomplete :memorystone [sender type arg]
+  (let [lower (.toLowerCase arg)]
+    (filter #(.startsWith % lower) (map #(.toLowerCase (:name %)) @memorystones))))
+
+(defn go-command [sender memorystone]
+  (when memorystone
+    (log/info "Teleporting %s to %s " sender memorystone)
+    (let [block (:block memorystone)
+          sign-face (.. block getState getData getFacing)]
+      (log/info "Block: %s" block)
+      (log/info "Sign-face: %s" block)
+      (.teleport sender (.getLocation (.getFace block sign-face)))
+      {:msg "Teleported"})))
 
 
+;; Plugin lifecycle
 (defn start
-  [pluginInstance]
-  (. pluginInstance info "in start memorystone.")
+  [plugin-instance]
   (log/info "%s" "in start memorystone")
-  (start2 pluginInstance)
-  )
+  (reset! plugin plugin-instance)
+  (ev/register-eventlist @plugin (events))
+  (cmd/register-command @plugin "go" #'go-command :memorystone)
+  (read-memstones))
 
 (defn stop
-  [pluginInstance]
-  (. pluginInstance info "in stop memorystone.")
+  [plugin]
   (log/info "%s" "in stop memorystone")
-  ;TODO: deregister events?
-  )
+  (write-memstones))
 
 
