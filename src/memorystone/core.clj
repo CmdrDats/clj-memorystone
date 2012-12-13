@@ -3,7 +3,8 @@
   (:require [cljminecraft.player :as pl])
   (:require [cljminecraft.bukkit :as bk])
   (:require [cljminecraft.logging :as log]
-            [cljminecraft.commands :as cmd])
+            [cljminecraft.commands :as cmd]
+            [cljminecraft.world :as w])
   (:require [cljminecraft.files :as files]))
 
 (defonce plugin (atom nil))
@@ -69,12 +70,8 @@
 (defn go-command [sender memorystone]
   (when memorystone
     (log/info "Teleporting %s to %s " sender memorystone)
-    (let [block (:block memorystone)
-          sign-face (.. block getState getData getFacing)]
-      (log/info "Block: %s" block)
-      (log/info "Sign-face: %s" block)
-      (.teleport sender (.getLocation (.getFace block sign-face)))
-      {:msg "Teleported"})))
+    (.teleport sender (.getLocation (w/facing-block (:block memorystone))))
+    {:msg "Teleported"}))
 
 
 ;; Plugin lifecycle
