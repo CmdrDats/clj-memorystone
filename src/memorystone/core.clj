@@ -56,8 +56,8 @@
 
 (defn events
   []
-  [(ev/event block.sign-change #'sign-change)
-   (ev/event block.block-break #'sign-break)])
+  [(ev/event "block.sign-change" #'sign-change)
+   (ev/event "block.block-break" #'sign-break)])
 
 ;; Command Handling
 (defmethod cmd/convert-type :memorystone [sender type arg]
